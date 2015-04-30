@@ -1,0 +1,286 @@
+Project 3 (Red Wine Quality Analysis) by Mihir Majmundar
+========================================================
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, packages}
+# Load all of the packages that you end up using
+# in your analysis in this code chunk.
+
+# Notice that the parameter "echo" was set to FALSE for this code chunk.
+# This prevents the code from displaying in the knitted HTML output.
+# You should set echo=FALSE for all code chunks in your file.
+
+library(ggplot2)
+library(GGally)
+library(reshape)
+library(scales)
+library(MASS)
+library(lattice)
+library(memisc)
+
+```
+
+```{r echo=FALSE, Load_the_Data}
+# Load the Data
+redwine <- read.csv("C:/Users/mm2815/Documents/Mihir/NanoDegree/DataAnalyst/Project 3/wineQualityReds.csv")
+```
+
+# Univariate Plots Section
+```{r echo=FALSE, Univariate_Plots}
+
+names(redwine)
+
+nrow(redwine)
+ncol(redwine)
+summary(redwine)
+```
+Most of the wine quality fall between 5 and 6. Average alcohol level is 10%. Wine is acidic, max pH level is 4.
+
+```{r echo=FALSE}
+cat("Most of the wine quality fall between 5 and 6. Average alcohol level is 10%. Wine is acidic, max pH level is 4. \n\n")
+
+ggplot(data = redwine, aes(x=quality))+
+  geom_histogram()
+cat("After adjusting binwidth to 1, Histogram looks better\n")
+summary(redwine$quality)
+
+ggplot(data = redwine, aes(x=quality))+
+  geom_histogram(binwidth=1)
+summary(redwine$quality)
+
+ggplot(data = redwine, aes(x=pH))+
+  geom_histogram()
+summary(redwine$pH)
+
+ggplot(data = redwine, aes(x=alcohol))+
+  geom_histogram()
+summary(redwine$alcohol)
+
+ggplot(data = redwine, aes(x=residual.sugar))+
+  geom_histogram()
+summary(redwine$residual.sugar)
+
+ggplot(data = redwine, aes(x=density))+
+  geom_histogram()
+summary(redwine$density)
+
+ggplot(data = redwine, aes(x=fixed.acidity))+
+  geom_histogram()
+summary(redwine$fixed.acidity)
+
+ggplot(data = redwine, aes(x=volatile.acidity))+
+  geom_histogram()
+summary(redwine$volatile.acidity)
+
+ggplot(data = redwine, aes(x=citric.acid))+
+  geom_histogram()
+summary(redwine$citric.acid)
+
+ggplot(data = redwine, aes(x=free.sulfur.dioxide))+
+  geom_histogram()
+summary(redwine$free.sulfur.dioxide)
+
+ggplot(data = redwine, aes(x=total.sulfur.dioxide))+
+  geom_histogram()
+summary(redwine$total.sulfur.dioxide)
+
+ggplot(data = redwine, aes(x=sulphates))+
+  geom_histogram()
+summary(redwine$sulphates)
+
+ggplot(data = redwine, aes(x=chlorides))+
+  geom_histogram()
+summary(redwine$chlorides)
+
+
+```
+
+# Univariate Analysis
+
+### What is the structure of your dataset?
+There are 1,599 observation in the dataset with 13 features (X(id), fixed.acidity, volatile.acidity, citric.acid, residual.sugar, chlorides, free.sulfur.dioxide, total.sulfur.dioxide, density, pH, sulphates, alcohol, quality). Quality is output variable and other 11 are input variable. X is unique id for each observation.
+
+All variables are numeric.
+
+### What is/are the main feature(s) of interest in your dataset?
+The main feature of the data set is quality of red wine. There are different 11 input variable with have some impact on the quality of wine. With some of the variable, I will be able to create predictive model for the red wine quality.
+
+### What other features in the dataset do you think will help support your investigation into your feature(s) of interest?
+
+residual sugar, density, pH, sulphates, alcohol and acidity are other features in the dataset that will help to investigate quality of wine.
+
+### Did you create any new variables from existing variables in the dataset?
+
+I have not created a new variable from existing variables in the dataset.
+
+### Of the features you investigated, were there any unusual distributions? Did you perform any operations on the data to tidy, adjust, or change the form of the data? If so, why did you do this?
+
+Quality histogram shows the normal distribution. I have not perform any operation on the data.
+
+
+
+# Bivariate Plots Section
+```{r echo=FALSE, Bivariate_Plots}
+cor(redwine)
+
+ggpairs(redwine[,2:13], lower=list(continuous="smooth", params=c(colour="blue")), diag=list(continuous="bar", params=c(colour="blue")), upper=list(params=list(corSize=6)), axisLabels='show')
+
+#Scatter Plot output feature(Quality) vs input features
+
+ggplot(data=redwine, aes(y=quality, x=alcohol))+geom_jitter() +
+  geom_smooth(method='lm', color= 'red')
+
+ggplot(data=redwine, aes(y=quality, x=pH))+geom_jitter() +
+  geom_smooth(method='lm', color= 'red')
+
+ggplot(data=redwine, aes(y=quality, x=density))+geom_jitter() +
+  geom_smooth(method='lm', color= 'red')
+
+ggplot(data=redwine, aes(y=quality, x=volatile.acidity))+geom_jitter() +
+  geom_smooth(method='lm', color= 'red')
+
+ggplot(data=redwine, aes(y=quality, x=fixed.acidity))+geom_jitter() +
+  geom_smooth(method='lm', color= 'red')
+
+ggplot(data=redwine, aes(y=quality, x=citric.acid))+geom_jitter() +
+  geom_smooth(method='lm', color= 'red')
+
+ggplot(data=redwine, aes(y=quality, x=residual.sugar))+geom_jitter() +
+  geom_smooth(method='lm', color= 'red')
+
+ggplot(data=redwine, aes(y=quality, x=chlorides))+geom_jitter() +
+  geom_smooth(method='lm', color= 'red')
+
+ggplot(data=redwine, aes(y=quality, x=free.sulfur.dioxide))+geom_jitter() +
+  geom_smooth(method='lm', color= 'red')
+
+ggplot(data=redwine, aes(y=quality, x=total.sulfur.dioxide))+geom_jitter() +
+  geom_smooth(method='lm', color= 'red')
+
+ggplot(data=redwine, aes(y=quality, x=sulphates))+geom_jitter() +
+  geom_smooth(method='lm', color= 'red')
+
+ggplot(data=redwine, aes(y=alcohol, x=density))+geom_jitter() +
+  geom_smooth(method='lm', color= 'red')
+
+ggplot(data=redwine, aes(y=free.sulfur.dioxide, x=total.sulfur.dioxide))+geom_jitter() +
+  geom_smooth(method='lm', color= 'red')
+
+
+```
+
+# Bivariate Analysis
+
+### Talk about some of the relationships you observed in this part of the investigation. How did the feature(s) of interest vary with other features in the dataset?
+
+Interesting observation, Volatile acidity shows negative linear relationship where Sulphate and alcohol shows positive linear relationship. 
+
+### Did you observe any interesting relationships between the other features (not the main feature(s) of interest)?
+
+Interesting relationship I found was in density. relationship with alcohol is negative means as value of alcohol increase, it will decrease the density of the wine where relationship with fix acidity is positive means as fix acidity increases density of the wine increases.
+
+### What was the strongest relationship you found?
+I found strongest relationship between Quality and Alcohol (0.476) (input vs output). Between the all data strongest relationship is between fix acidity and pH (-0.683) (input vs input).  
+
+
+
+# Multivariate Plots Section
+
+```{r echo=FALSE, Multivariate_Plots}
+density_bucket <- cut(redwine$density,c(0.99,0.992,0.994,0.96,0.998,1.000,1.006))
+
+ggplot(data=redwine, aes(y=quality, x=alcohol, color=density_bucket))+geom_jitter() +
+  geom_smooth(method='lm', color= 'red')
+
+ggplot(data=redwine, aes(y=quality, x=residual.sugar, color=density_bucket))+geom_jitter() +
+  geom_smooth(method='lm', color= 'red')
+
+ggplot(data=redwine, aes(y=quality, x=sulphates, color=citric.acid))+geom_jitter() +
+  geom_smooth(method='lm', color= 'red')
+
+ggplot(data=redwine, aes(y=quality, x=citric.acid, color=fixed.acidity))+geom_jitter() +
+  geom_smooth(method='lm', color= 'red')
+
+ggplot(data=redwine, aes(y=quality, x=volatile.acidity, color=sulphates))+geom_jitter() +
+  geom_smooth(method='lm', color= 'red')
+
+ggplot(data=redwine, aes(y=quality, x=sulphates, color=alcohol))+geom_jitter() +
+  geom_smooth(method='lm', color= 'red')
+
+ggplot(data=redwine, aes(y=quality, x=alcohol, color=sulphates))+geom_jitter() +
+  geom_smooth(method='lm', color= 'red')
+
+```
+
+# Multivariate Analysis
+
+### Talk about some of the relationships you observed in this part of the investigation. Were there features that strengthened each other in terms of looking at your feature(s) of interest?
+
+As I investigate further, quality of wine shows very weak relationship with few input features. There are some strong relationship between input features like citric acid and fix acidity, pH and fix acidity. Alcohol shows the strongest relationship with Quality.
+
+### Were there any interesting or surprising interactions between features?
+
+Interesting part of the data is that it does not show strong consistent relationship with output vs input features. There are some strong relationship among input features and when you try to relate them and transform to relational model, they fail to show the consistency. 
+
+### OPTIONAL: Did you create any models with your dataset? Discuss the strengths and limitations of your model.
+```{r echo=FALSE, Linear_Model}
+
+m1 <- lm(quality ~ alcohol, data = redwine)
+m2 <- update(m1, ~ . + citric.acid)
+m3 <- update(m2, ~ . + fixed.acidity)
+m4 <- update(m3, ~ . + volatile.acidity)
+m5 <- update(m4, ~ . + sulphates)
+m6 <- update(m5, ~ . + chlorides)
+m7 <- update(m6, ~ . + total.sulfur.dioxide)
+```
+
+```{r echo=FALSE}
+mtable(m1, m2, m3, m4, m5, m6, m7)
+
+```
+------
+
+# Final Plots and Summary
+
+### Plot One
+```{r echo=FALSE, Plot_One}
+ggplot(data = redwine, aes(x=quality))+
+  geom_histogram(binwidth=1)
+```
+
+### Description One
+Histogram of Quality which is the output feature of the wine data. The data is collected on different features including quality of the wine. Histogram shows almost perfect bell curve. Median of the quality data is 6. Mean value is 5.636.
+
+### Plot Two
+```{r echo=FALSE, Plot_Two}
+ggplot(data=redwine, aes(y=quality, x=alcohol))+geom_jitter() +
+  geom_smooth(method='lm', color= 'red')
+
+```
+
+### Description Two
+From the data summary, I found that alcohol has strongest linear relationship with quality among all features. R value is 0.475. Scatter plot shows some linear relationship. I have added smooth line to show the trend.
+
+### Plot Three
+```{r echo=FALSE, Plot_Three}
+ggplot(data=redwine, aes(y=quality, x=alcohol, color=density_bucket))+geom_jitter() +
+  geom_smooth(method='lm', color= 'red')
+
+```
+
+### Description Three
+
+After finding alcohol and quality near to strong relationship, density was interesting features. There are many weak and strong relationship of other features on density. Alcohol was one the strong features and it was with negative relationship. 
+
+The chart shows that as value of alcohol increases, it reduce the density and lower value of alcohol increases the density. so lower the density value improve the quality of the wine. relationship between density and quality is also negative. So these two features alcohol and density make more sense to keep it together.
+
+------
+
+# Reflection
+
+Red Wine data has 1599 observations. There are 11 input features and one output features. Here we are trying to find which feature is impacting the quality of the wine. How strongly they are related to the quality. 
+
+After running the histogram, most of the data were very consistent among themselves. When I started plotting scatter plot, result were interesting. None of the feature was strongly related to the output feature quality. There were few features who has weak relationship with quality. When I made the model you can see that R value does not improve much after adding more input features.
+
+Among all input features, alcohol has moderate relationship with quality. I found some other interesting fact that, total sulfur dioxide and free sulfur dioxide are strongly related but total sulfur dioxide has more impact on quality than free sulfur dioxide. There were few acidic features has strong and moderate relationship with pH but pH has very weak relationship with Quality. There acidic features have some weak relationship with quality. I was surprise seeing the result that pH level has almost no impact on quality of the wine.
+
+In summary, Test results(input features) for wine and quality of the wine are not related strongly. After creating the model it comes to very R value which suggest that they have weak linear relationship. For higher level of confidence and linearly we need to get some more data point and impacting features. Given features are not enough to predict the quality of the wine.
